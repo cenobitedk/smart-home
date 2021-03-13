@@ -1,0 +1,70 @@
+esphome:
+  name: heater_switch
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: "****"
+  password: "****"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Heater Switch Fallback Hotspot"
+    password: "****"
+
+captive_portal:
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+uart:
+  rx_pin: RX
+  baud_rate: 4800
+
+sensor:
+  - platform: cse7766
+    current:
+      name: "Heater switch Current"
+    voltage:
+      name: "Heater switch Voltage"
+    power:
+      name: "Heater switch Power"
+    update_interval: 30s
+
+  - platform: wifi_signal
+    name: "Heater switch WiFi signal"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Heater switch uptime"
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name: "Heater switch button"
+    on_press:
+      - switch.toggle: relay
+
+switch:
+  - platform: gpio
+    name: "Heater switch relay"
+    pin: GPIO12
+    id: relay
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes
+
+text_sensor:
+  - platform: version
+    name: "Heater switch ESPHome version"
