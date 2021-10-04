@@ -1,16 +1,16 @@
 esphome:
-  name: heater_switch
+  name: heater-switch
   platform: ESP8266
   board: esp01_1m
 
 wifi:
-  ssid: "****"
-  password: "****"
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Heater Switch Fallback Hotspot"
-    password: "****"
+    password: !secret wifi_password
 
 captive_portal:
 
@@ -35,7 +35,12 @@ sensor:
       name: "Heater switch Voltage"
     power:
       name: "Heater switch Power"
+      id: heater_power
     update_interval: 30s
+
+  - platform: total_daily_energy
+    name: "Heater Total Daily Energy"
+    power_id: heater_power
 
   - platform: wifi_signal
     name: "Heater switch WiFi signal"
@@ -68,3 +73,8 @@ status_led:
 text_sensor:
   - platform: version
     name: "Heater switch ESPHome version"
+
+# Enable time component to reset energy at midnight
+time:
+  - platform: sntp
+    timezone: Europe/Copenhagen
